@@ -3,49 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>どうぶつ あそび</title>
+  <title>どうぶつタッチ</title>
+
   <style>
     body {
       margin: 0;
-      background-color: #fff7e6;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fff7e6;
+      text-align: center;
     }
-    .container {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      height: 100vh;
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 10px;
     }
+
+    p {
+      font-size: 16px;
+      color: #555;
+    }
+
+    .animals {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
     .animal {
-      width: 30vw;
-      max-width: 250px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      font-size: 40px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      user-select: none;
+      transition: transform 0.1s;
     }
+
     .animal:active {
-      transform: scale(1.2);
+      transform: scale(0.95);
+    }
+
+    .name {
+      font-size: 18px;
+      margin-top: 8px;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 22px;
+      color: #ff7a00;
+      min-height: 1.5em;
     }
   </style>
 </head>
+
 <body>
+  <h1>どうぶつタッチ 🐾</h1>
+  <p>タッチして なまえを きいてみよう！</p>
 
-  <div class="container">
-    <img src="https://illustrain.com/img/work/2016/illustrain09-dog.png"
-         class="animal"
-         onclick="playSound('dog')">
+  <div class="animals">
+    <div class="animal" onclick="speak('いぬ')">
+      🐶
+      <div class="name">いぬ</div>
+    </div>
 
-    <img src="https://illustrain.com/img/work/2016/illustrain09-cat.png"
-         class="animal"
-         onclick="playSound('cat')">
+    <div class="animal" onclick="speak('ねこ')">
+      🐱
+      <div class="name">ねこ</div>
+    </div>
+
+    <div class="animal" onclick="speak('ぞう')">
+      🐘
+      <div class="name">ぞう</div>
+    </div>
+
+    <div class="animal" onclick="speak('うさぎ')">
+      🐰
+      <div class="name">うさぎ</div>
+    </div>
   </div>
 
-  <audio id="dog" src="https://soundeffect-lab.info/sound/animal/mp3/dog-bark1.mp3"></audio>
-  <audio id="cat" src="https://soundeffect-lab.info/sound/animal/mp3/cat-meow1.mp3"></audio>
+  <div class="message" id="message"></div>
 
   <script>
-    function playSound(id) {
-      const sound = document.getElementById(id);
-      sound.currentTime = 0;
-      sound.play();
+    function speak(name) {
+      document.getElementById("message").textContent =
+        name + " だよ！";
+
+      if ('speechSynthesis' in window) {
+        const uttr = new SpeechSynthesisUtterance(name + "だよ");
+        uttr.lang = 'ja-JP';
+        speechSynthesis.speak(uttr);
+      }
     }
   </script>
-
 </body>
 </html>
+
