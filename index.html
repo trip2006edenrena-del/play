@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>どうぶつタッチ</title>
+  <title>どうぶつクイズ</title>
 
   <style>
     body {
@@ -19,9 +19,10 @@
       margin-bottom: 10px;
     }
 
-    p {
-      font-size: 16px;
-      color: #555;
+    .question {
+      font-size: 22px;
+      margin: 20px 0;
+      color: #ff7a00;
     }
 
     .animals {
@@ -54,52 +55,34 @@
     .message {
       margin-top: 20px;
       font-size: 22px;
-      color: #ff7a00;
       min-height: 1.5em;
     }
   </style>
 </head>
 
 <body>
-  <h1>どうぶつタッチ 🐾</h1>
-  <p>タッチして なまえを きいてみよう！</p>
+  <h1>どうぶつクイズ 🐾</h1>
+
+  <div class="question" id="question"></div>
 
   <div class="animals">
-    <div class="animal" onclick="speak('いぬ')">
+    <div class="animal" onclick="answer('いぬ')">
       🐶
       <div class="name">いぬ</div>
     </div>
 
-    <div class="animal" onclick="speak('ねこ')">
+    <div class="animal" onclick="answer('ねこ')">
       🐱
       <div class="name">ねこ</div>
     </div>
 
-    <div class="animal" onclick="speak('ぞう')">
+    <div class="animal" onclick="answer('ぞう')">
       🐘
       <div class="name">ぞう</div>
     </div>
 
-    <div class="animal" onclick="speak('うさぎ')">
+    <div class="animal" onclick="answer('うさぎ')">
       🐰
-      <div class="name">うさぎ</div>
-    </div>
-  </div>
+      <div
 
-  <div class="message" id="message"></div>
-
-  <script>
-    function speak(name) {
-      document.getElementById("message").textContent =
-        name + " だよ！";
-
-      if ('speechSynthesis' in window) {
-        const uttr = new SpeechSynthesisUtterance(name + "だよ");
-        uttr.lang = 'ja-JP';
-        speechSynthesis.speak(uttr);
-      }
-    }
-  </script>
-</body>
-</html>
 
