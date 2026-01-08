@@ -86,6 +86,7 @@ h1 {
 <div class="message" id="message"></div>
 
 <script>
+<script>
 const animals = [
   'Dog','Cat','Elephant','Rabbit',
   'Lion','Monkey','Cow','Pig','Bear'
@@ -113,18 +114,21 @@ function checkAnswer(selected) {
   if (selected === answer) {
     starCount++;
     updateStars();
-    document.getElementById('message').textContent = '🎉 Great!';
-    speak('Great!');
 
+    // ごほうび判定
     if (starCount === 3) {
-      setTimeout(() => reward('🍬 グミ もらった！','You got gummy!'), 800);
+      showReward('🍬 グミ もらった！', 'You got a gummy!');
     } else if (starCount === 6) {
-      setTimeout(() => reward('🍦 アイス もらった！','You got ice cream!'), 800);
+      showReward('🍦 アイス もらった！', 'You got ice cream!');
     } else if (starCount === 9) {
-      setTimeout(() => reward('🎉 とくべつ おやつ！','You got special snack!'), 800);
+      showReward('🎉 とくべつ おやつ！', 'You got a special snack!');
+      setTimeout(resetStars, 1200);
     } else {
-      setTimeout(newQuestion, 1000);
+      speak('Great!');
     }
+
+    document.getElementById('message').textContent = '🎉 Great!';
+    setTimeout(newQuestion, 1200);
 
   } else {
     document.getElementById('message').textContent = '😊 Try again';
@@ -132,12 +136,14 @@ function checkAnswer(selected) {
   }
 }
 
-function reward(text, voice) {
+function showReward(text, voice) {
   document.getElementById('message').textContent = text;
   speak(voice);
+}
+
+function resetStars() {
   starCount = 0;
   updateStars();
-  setTimeout(newQuestion, 1500);
 }
 
 function speak(text) {
@@ -152,6 +158,7 @@ function speak(text) {
 updateStars();
 newQuestion();
 </script>
+
 
 </body>
 </html>
