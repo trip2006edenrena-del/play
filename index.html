@@ -83,6 +83,51 @@
 
     <div class="animal" onclick="answer('うさぎ')">
       🐰
-      <div
+      <div class="name">うさぎ</div>
+    </div>
+  </div>
 
+  <div class="message" id="message"></div>
 
+  <script>
+    const animals = ['いぬ', 'ねこ', 'ぞう', 'うさぎ'];
+    let correct = '';
+
+    function newQuestion() {
+      correct = animals[Math.floor(Math.random() * animals.length)];
+      document.getElementById('question').textContent =
+        correct + ' は どれ？';
+      document.getElementById('message').textContent = '';
+
+      speak(correct + ' は どれ？');
+    }
+
+    function answer(name) {
+      const message = document.getElementById('message');
+
+      if (name === correct) {
+        message.textContent = '🎉 せいかい！';
+        message.style.color = '#4caf50';
+        speak('せいかい');
+
+        setTimeout(newQuestion, 1500);
+      } else {
+        message.textContent = '❌ もういっかい！';
+        message.style.color = '#e53935';
+        speak('ちがうよ');
+      }
+    }
+
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        const uttr = new SpeechSynthesisUtterance(text);
+        uttr.lang = 'ja-JP';
+        speechSynthesis.cancel();
+        speechSynthesis.speak(uttr);
+      }
+    }
+
+    newQuestion();
+  </script>
+</body>
+</html>
