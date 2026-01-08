@@ -1,133 +1,157 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>どうぶつクイズ</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animal Quiz Reward</title>
 
-  <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #fff7e6;
-      text-align: center;
-    }
+<style>
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #fff7e6;
+  text-align: center;
+}
 
-    h1 {
-      font-size: 26px;
-      margin-bottom: 10px;
-    }
+h1 {
+  font-size: 26px;
+}
 
-    .question {
-      font-size: 22px;
-      margin: 20px 0;
-      color: #ff7a00;
-    }
+.question {
+  font-size: 22px;
+  margin: 12px 0;
+  color: #ff7a00;
+  min-height: 1.5em;
+}
 
-    .animals {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin-top: 20px;
-    }
+.stars {
+  font-size: 32px;
+  margin: 10px 0;
+}
 
-    .animal {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 20px;
-      font-size: 40px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      user-select: none;
-      transition: transform 0.1s;
-    }
+.animals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
 
-    .animal:active {
-      transform: scale(0.95);
-    }
+.animal {
+  background: white;
+  border-radius: 22px;
+  padding: 18px;
+  font-size: 36px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  user-select: none;
+}
 
-    .name {
-      font-size: 18px;
-      margin-top: 8px;
-    }
+.animal:active {
+  transform: scale(0.95);
+}
 
-    .message {
-      margin-top: 20px;
-      font-size: 22px;
-      min-height: 1.5em;
-    }
-  </style>
+.name {
+  font-size: 16px;
+  margin-top: 6px;
+}
+
+.message {
+  margin-top: 16px;
+  font-size: 24px;
+  min-height: 1.5em;
+}
+</style>
 </head>
 
 <body>
-  <h1>どうぶつクイズ 🐾</h1>
 
-  <div class="question" id="question"></div>
+<h1>Animal Quiz 🐾</h1>
 
-  <div class="animals">
-    <div class="animal" onclick="answer('いぬ')">
-      🐶
-      <div class="name">いぬ</div>
-    </div>
+<div class="question" id="question"></div>
+<div class="stars" id="stars">☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆</div>
 
-    <div class="animal" onclick="answer('ねこ')">
-      🐱
-      <div class="name">ねこ</div>
-    </div>
+<div class="animals">
+  <div class="animal" onclick="checkAnswer('Dog')">🐶<div class="name">Dog</div></div>
+  <div class="animal" onclick="checkAnswer('Cat')">🐱<div class="name">Cat</div></div>
+  <div class="animal" onclick="checkAnswer('Elephant')">🐘<div class="name">Elephant</div></div>
+  <div class="animal" onclick="checkAnswer('Rabbit')">🐰<div class="name">Rabbit</div></div>
+  <div class="animal" onclick="checkAnswer('Lion')">🦁<div class="name">Lion</div></div>
+  <div class="animal" onclick="checkAnswer('Monkey')">🐵<div class="name">Monkey</div></div>
+  <div class="animal" onclick="checkAnswer('Cow')">🐮<div class="name">Cow</div></div>
+  <div class="animal" onclick="checkAnswer('Pig')">🐷<div class="name">Pig</div></div>
+  <div class="animal" onclick="checkAnswer('Bear')">🐻<div class="name">Bear</div></div>
+</div>
 
-    <div class="animal" onclick="answer('ぞう')">
-      🐘
-      <div class="name">ぞう</div>
-    </div>
+<div class="message" id="message"></div>
 
-    <div class="animal" onclick="answer('うさぎ')">
-      🐰
-      <div class="name">うさぎ</div>
-    </div>
-  </div>
+<script>
+const animals = [
+  'Dog','Cat','Elephant','Rabbit',
+  'Lion','Monkey','Cow','Pig','Bear'
+];
 
-  <div class="message" id="message"></div>
+let answer = '';
+let starCount = 0;
 
-  <script>
-    const animals = ['いぬ', 'ねこ', 'ぞう', 'うさぎ'];
-    let correct = '';
+function newQuestion() {
+  answer = animals[Math.floor(Math.random() * animals.length)];
+  document.getElementById('question').textContent =
+    'Where is the ' + answer + '?';
+  speak('Where is the ' + answer + '?');
+}
 
-    function newQuestion() {
-      correct = animals[Math.floor(Math.random() * animals.length)];
-      document.getElementById('question').textContent =
-        correct + ' は どれ？';
-      document.getElementById('message').textContent = '';
+function updateStars() {
+  let stars = '';
+  for (let i = 0; i < 9; i++) {
+    stars += i < starCount ? '⭐ ' : '☆ ';
+  }
+  document.getElementById('stars').textContent = stars;
+}
 
-      speak(correct + ' は どれ？');
+function checkAnswer(selected) {
+  if (selected === answer) {
+    starCount++;
+    updateStars();
+    document.getElementById('message').textContent = '🎉 Great!';
+    speak('Great!');
+
+    if (starCount === 3) {
+      setTimeout(() => reward('🍬 グミ もらった！','You got gummy!'), 800);
+    } else if (starCount === 6) {
+      setTimeout(() => reward('🍦 アイス もらった！','You got ice cream!'), 800);
+    } else if (starCount === 9) {
+      setTimeout(() => reward('🎉 とくべつ おやつ！','You got special snack!'), 800);
+    } else {
+      setTimeout(newQuestion, 1000);
     }
 
-    function answer(name) {
-      const message = document.getElementById('message');
+  } else {
+    document.getElementById('message').textContent = '😊 Try again';
+    speak('Try again');
+  }
+}
 
-      if (name === correct) {
-        message.textContent = '🎉 せいかい！';
-        message.style.color = '#4caf50';
-        speak('せいかい');
+function reward(text, voice) {
+  document.getElementById('message').textContent = text;
+  speak(voice);
+  starCount = 0;
+  updateStars();
+  setTimeout(newQuestion, 1500);
+}
 
-        setTimeout(newQuestion, 1500);
-      } else {
-        message.textContent = '❌ もういっかい！';
-        message.style.color = '#e53935';
-        speak('ちがうよ');
-      }
-    }
+function speak(text) {
+  if ('speechSynthesis' in window) {
+    const uttr = new SpeechSynthesisUtterance(text);
+    uttr.lang = 'en-US';
+    speechSynthesis.cancel();
+    speechSynthesis.speak(uttr);
+  }
+}
 
-    function speak(text) {
-      if ('speechSynthesis' in window) {
-        const uttr = new SpeechSynthesisUtterance(text);
-        uttr.lang = 'ja-JP';
-        speechSynthesis.cancel();
-        speechSynthesis.speak(uttr);
-      }
-    }
+updateStars();
+newQuestion();
+</script>
 
-    newQuestion();
-  </script>
 </body>
 </html>
