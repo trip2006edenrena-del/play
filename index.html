@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>どうぶつ あそび</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #fff7e6;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 100vh;
+    }
+    .animal {
+      width: 30vw;
+      max-width: 250px;
+    }
+    .animal:active {
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="https://illustrain.com/img/work/2016/illustrain09-dog.png"
+         class="animal"
+         onclick="playSound('dog')">
+
+    <img src="https://illustrain.com/img/work/2016/illustrain09-cat.png"
+         class="animal"
+         onclick="playSound('cat')">
+  </div>
+
+  <audio id="dog" src="https://soundeffect-lab.info/sound/animal/mp3/dog-bark1.mp3"></audio>
+  <audio id="cat" src="https://soundeffect-lab.info/sound/animal/mp3/cat-meow1.mp3"></audio>
+
+  <script>
+    function playSound(id) {
+      const sound = document.getElementById(id);
+      sound.currentTime = 0;
+      sound.play();
+    }
+  </script>
+
+</body>
+</html>
