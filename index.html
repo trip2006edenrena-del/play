@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Animal Quiz Reward</title>
+<title>Animal Quiz ⭐</title>
 
 <style>
 body {
@@ -14,20 +14,11 @@ body {
   text-align: center;
 }
 
-h1 {
-  font-size: 26px;
-}
+h1 { font-size: 26px; }
 
 .question {
   font-size: 22px;
-  margin: 12px 0;
-  color: #ff7a00;
-  min-height: 1.5em;
-}
-
-.stars {
-  font-size: 32px;
-  margin: 10px 0;
+  margin: 16px 0;
 }
 
 .animals {
@@ -38,28 +29,22 @@ h1 {
 }
 
 .animal {
-  background: white;
-  border-radius: 22px;
-  padding: 18px;
-  font-size: 36px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  font-size: 40px;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  user-select: none;
-}
-
-.animal:active {
-  transform: scale(0.95);
-}
-
-.name {
-  font-size: 16px;
-  margin-top: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .message {
+  font-size: 22px;
   margin-top: 16px;
+}
+
+.stars {
   font-size: 24px;
-  min-height: 1.5em;
+  margin-top: 8px;
 }
 </style>
 </head>
@@ -67,91 +52,82 @@ h1 {
 <body>
 
 <h1>Animal Quiz 🐾</h1>
-
 <div class="question" id="question"></div>
-<div class="stars" id="stars">☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆ ☆</div>
-
-<div class="animals">
-  <div class="animal" onclick="checkAnswer('Dog')">🐶<div class="name">Dog</div></div>
-  <div class="animal" onclick="checkAnswer('Cat')">🐱<div class="name">Cat</div></div>
-  <div class="animal" onclick="checkAnswer('Elephant')">🐘<div class="name">Elephant</div></div>
-  <div class="animal" onclick="checkAnswer('Rabbit')">🐰<div class="name">Rabbit</div></div>
-  <div class="animal" onclick="checkAnswer('Lion')">🦁<div class="name">Lion</div></div>
-  <div class="animal" onclick="checkAnswer('Monkey')">🐵<div class="name">Monkey</div></div>
-  <div class="animal" onclick="checkAnswer('Cow')">🐮<div class="name">Cow</div></div>
-  <div class="animal" onclick="checkAnswer('Pig')">🐷<div class="name">Pig</div></div>
-  <div class="animal" onclick="checkAnswer('Bear')">🐻<div class="name">Bear</div></div>
-</div>
-
+<div class="animals" id="animals"></div>
 <div class="message" id="message"></div>
+<div class="stars" id="stars"></div>
 
-<script>
 <script>
 const animals = [
-  'Dog','Cat','Elephant','Rabbit',
-  'Lion','Monkey','Cow','Pig','Bear'
+  { emoji: "🐶", en: "dog" },
+  { emoji: "🐱", en: "cat" },
+  { emoji: "🐘", en: "elephant" },
+  { emoji: "🐰", en: "rabbit" },
+  { emoji: "🦁", en: "lion" },
+  { emoji: "🐼", en: "panda" },
+  { emoji: "🐸", en: "frog" },
+  { emoji: "🐵", en: "monkey" },
+  { emoji: "🐮", en: "cow" }
 ];
 
-let answer = '';
-let starCount = 0;
+let correct = null;
+let stars = 0;
+
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
 
 function newQuestion() {
-  answer = animals[Math.floor(Math.random() * animals.length)];
-  document.getElementById('question').textContent =
-    'Where is the ' + answer + '?';
-  speak('Where is the ' + answer + '?');
+  correct = animals[Math.floor(Math.random() * animals.length)];
+  document.getElementById("question").textContent =
+    `Which is "${correct.en}"?`;
+
+  const area = document.getElementById("animals");
+  area.innerHTML = "";
+
+  shuffle([...animals]).forEach(a => {
+    const div = document.createElement("div");
+    div.className = "animal";
+    div.textContent = a.emoji;
+    div.onclick = () => check(a);
+    area.appendChild(div);
+  });
 }
 
 function updateStars() {
-  let stars = '';
-  for (let i = 0; i < 9; i++) {
-    stars += i < starCount ? '⭐ ' : '☆ ';
-  }
-  document.getElementById('stars').textContent = stars;
+  let reward = "";
+  if (stars >= 9) reward = "🎉 特別おやつ！";
+  else if (stars >= 6) reward = "🍦 アイス！";
+  else if (stars >= 3) reward = "🍬 グミ！";
+
+  document.getElementById("stars").textContent =
+    "⭐ " + stars + "こ " + reward;
 }
 
-function checkAnswer(selected) {
-  if (selected === answer) {
-    starCount++;
+function check(animal) {
+  if (animal.en === correct.en) {
+    stars++;
+    document.getElementById("message").textContent = "Correct! ⭐";
     updateStars();
+    speak(correct.en);
 
-    // ごほうび判定
-    if (starCount === 3) {
-      showReward('🍬 グミ もらった！', 'You got a gummy!');
-    } else if (starCount === 6) {
-      showReward('🍦 アイス もらった！', 'You got ice cream!');
-    } else if (starCount === 9) {
-      showReward('🎉 とくべつ おやつ！', 'You got a special snack!');
-      setTimeout(resetStars, 1200);
-    } else {
-      speak('Great!');
+    if (stars >= 9) {
+      document.getElementById("question").textContent =
+        "🎊 ALL CLEAR!";
+      return; // ← ここで終了
     }
 
-    document.getElementById('message').textContent = '🎉 Great!';
-    setTimeout(newQuestion, 1200);
-
+    setTimeout(newQuestion, 800);
   } else {
-    document.getElementById('message').textContent = '😊 Try again';
-    speak('Try again');
+    document.getElementById("message").textContent = "Try again!";
   }
 }
 
-function showReward(text, voice) {
-  document.getElementById('message').textContent = text;
-  speak(voice);
-}
-
-function resetStars() {
-  starCount = 0;
-  updateStars();
-}
-
-function speak(text) {
-  if ('speechSynthesis' in window) {
-    const uttr = new SpeechSynthesisUtterance(text);
-    uttr.lang = 'en-US';
-    speechSynthesis.cancel();
-    speechSynthesis.speak(uttr);
+function speak(word) {
+  if ("speechSynthesis" in window) {
+    const u = new SpeechSynthesisUtterance(word);
+    u.lang = "en-US";
+    speechSynthesis.speak(u);
   }
 }
 
@@ -159,6 +135,7 @@ updateStars();
 newQuestion();
 </script>
 
-
 </body>
 </html>
+
+
