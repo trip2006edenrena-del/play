@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Animal Quiz ⭐</title>
+<title>Animal Quiz</title>
 
 <style>
 body {
@@ -25,7 +25,6 @@ h1 { font-size: 26px; }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 14px;
-  margin-top: 20px;
 }
 
 .animal {
@@ -33,8 +32,9 @@ h1 { font-size: 26px; }
   border-radius: 20px;
   padding: 20px;
   font-size: 40px;
-  cursor: pointer;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  cursor: pointer;
+  user-select: none;
 }
 
 .message {
@@ -44,7 +44,7 @@ h1 { font-size: 26px; }
 
 .stars {
   font-size: 24px;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 </style>
 </head>
@@ -70,7 +70,7 @@ const animals = [
   { emoji: "🐮", en: "cow" }
 ];
 
-let correct = null;
+let correct;
 let stars = 0;
 
 function shuffle(arr) {
@@ -89,7 +89,10 @@ function newQuestion() {
     const div = document.createElement("div");
     div.className = "animal";
     div.textContent = a.emoji;
-    div.onclick = () => check(a);
+
+    // 👇 iPhone対応：onclickのみ・即処理
+    div.addEventListener("click", () => check(a));
+
     area.appendChild(div);
   });
 }
@@ -104,30 +107,32 @@ function updateStars() {
     "⭐ " + stars + "こ " + reward;
 }
 
+function speak(word) {
+  if (!("speechSynthesis" in window)) return;
+
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = "en-US";
+  speechSynthesis.cancel(); // ← iPhone必須
+  speechSynthesis.speak(u);
+}
+
 function check(animal) {
   if (animal.en === correct.en) {
     stars++;
     document.getElementById("message").textContent = "Correct! ⭐";
-    updateStars();
+
+    // 👇 ユーザー操作直後に音声（重要）
     speak(correct.en);
+    updateStars();
 
     if (stars >= 9) {
-      document.getElementById("question").textContent =
-        "🎊 ALL CLEAR!";
-      return; // ← ここで終了
+      document.getElementById("question").textContent = "🎊 ALL CLEAR!";
+      return;
     }
 
-    setTimeout(newQuestion, 800);
+    setTimeout(newQuestion, 600);
   } else {
     document.getElementById("message").textContent = "Try again!";
-  }
-}
-
-function speak(word) {
-  if ("speechSynthesis" in window) {
-    const u = new SpeechSynthesisUtterance(word);
-    u.lang = "en-US";
-    speechSynthesis.speak(u);
   }
 }
 
@@ -137,5 +142,4 @@ newQuestion();
 
 </body>
 </html>
-
 
